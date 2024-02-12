@@ -9,4 +9,6 @@ CS229 final project repository
     conda activate 229Proj
 
 ## Pushing changes to git
+Helpful article for Git:
+https://kbroman.org/github_tutorial/pages/fork.html
 
