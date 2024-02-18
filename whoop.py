@@ -177,10 +177,60 @@ if __name__ == '__main__':
     print(f"Precision: {precision}")
     print(f"Recall: {recall}")
     print(f"F1 Score: {f1}")
+
+     ## LIMITED MODEL, RHR, HRV ##
+    print('TRIAL THREE: Only RHR and HRV features')
+    limited_trial_data = complete_whoop_dataset
+    limited_trial_data = limited_trial_data[['Pre STAI State Anxiety', 'RHR', 'HRV']]
+
+    X = limited_trial_data.drop('Pre STAI State Anxiety', axis=1)  
+    y = limited_trial_data['Pre STAI State Anxiety']
+
+    # Model #1: RandomForest
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+
+    # Hyperparameters according to the paper
+    rf = RandomForestClassifier(n_estimators=1000, max_depth=2, max_features='sqrt', random_state=42)
+
+    # 10-fold CV
+    kf = KFold(n_splits=10, shuffle=True, random_state=42)
+    cv_scores = cross_val_score(rf, X_train_scaled, y_train, cv=kf)
+
+    # Fit the model
+    rf.fit(X_train_scaled, y_train)
+    feature_importances = rf.feature_importances_
+
+    print("CV Scores:", cv_scores)
+    features = X.columns
+    importances = rf.feature_importances_
+    indices = np.argsort(importances)[::-1]
+
+    print("Feature ranking:")
+    for f in range(X_train.shape[1]):
+        print(f"{f + 1}. feature {features[indices[f]]} ({importances[indices[f]]})")
+
+    # Evaluate the model
+    y_pred = rf.predict(X_test_scaled)
+
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred, average='binary')
+    recall = recall_score(y_test, y_pred, average='binary')
+    f1 = f1_score(y_test, y_pred, average='binary')
+
+    # Print metrics
+
+    print(f"Accuracy: {accuracy}")
+    print(f"Precision: {precision}")
+    print(f"Recall: {recall}")
+    print(f"F1 Score: {f1}")
     
     
 '''
-    Model on RHR, HRV only
+    Model on RHR, HRV only - Sylvie attempted, check my work pls
     Begin person-specific trials
     Hybrid model
     -- over time? -- 
