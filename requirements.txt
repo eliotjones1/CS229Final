@@ -7,3 +7,4 @@ tensorflow-macos
 tensorflow-metal
 torch
 torch-geometric
+xgboost
