@@ -3,3 +3,7 @@ matplotlib
 pandas
 openpyxl
 scikit-learn
+tensorflow-macos
+tensorflow-metal
+torch
+torch-geometric
