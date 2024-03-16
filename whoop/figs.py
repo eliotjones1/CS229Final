@@ -74,5 +74,5 @@ def rf_plots(ids, accuracy_scores):
 if __name__ == '__main__':
     data = pd.read_excel('BWPilot_CombinedData_20210803_fordryad_addvars_cleaned_noround2_v3.xlsx', engine='openpyxl')
     whoop_data = create_whoop_data(data)
-    whoop_scatter(whoop_data, 10)
+    whoop_scatter(whoop_data, 100)
 

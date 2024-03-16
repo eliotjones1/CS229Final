@@ -20,18 +20,18 @@ if __name__ == '__main__':
     ######## PART ONE: Using full dataset ########
     ## TRIAL ONE full ##
     print('TRIAL ONE Full Dataset')
-    trial_1_acc, trial_1_precision, trial_1_recall, trial_1_f1 = run_rf(whoop_data, full_metrics=True)
+    trial_1_acc, trial_1_precision, trial_1_recall, trial_1_f1 = run_rf(whoop_data, full_metrics=True, print_metrics=True)
     ## do some stuff with these
     
     ## TRIAL TWO, RHR, HRV, Sleep Score, Hours of Sleep, Sleep Efficiency, Respiration Rate ##
     print('TRIAL TWO smaller dataset')
     small_trial_data = whoop_data[['Pre STAI State Anxiety', 'RHR', 'HRV', 'Sleep Score', 'Hours of Sleep', 'Sleep Efficiency', 'Respiration Rate', 'ScrSubjectID']]
-    trial_2_acc, trial_2_precision, trial_2_recall, trial_2_f1 = run_rf(small_trial_data, full_metrics=True)
+    trial_2_acc, trial_2_precision, trial_2_recall, trial_2_f1 = run_rf(small_trial_data, full_metrics=True, print_metrics=True)
     
     ## TRIAL THREE, RHR, HRV ##
     print('TRIAL THREE HRV RHR only')
     limited_trial_data = whoop_data[['Pre STAI State Anxiety', 'RHR', 'HRV', 'ScrSubjectID']]
-    trial_3_acc, trial_3_precision, trial_3_recall, trial_3_f1 = run_rf(limited_trial_data, full_metrics=True)
+    trial_3_acc, trial_3_precision, trial_3_recall, trial_3_f1 = run_rf(limited_trial_data, full_metrics=True, print_metrics=True)
     
     ######## PART TWO: Person-specific models ########
     ## TRIAL FOUR, Full dataset ##
@@ -49,7 +49,7 @@ if __name__ == '__main__':
             accuracies[person] = indiv_acc
             list_of_accuracies.append(indiv_acc)
 
-    average_acc = np.mean(list_of_accuracies)   
+    average_acc = np.mean(list_of_accuracies)
     sd_acc = np.std(list_of_accuracies)
 
     print(f'Accuracy average: {average_acc}, standard dev: {sd_acc}')
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     accuracy_scores = list(accuracies.values())
     rf_plots(ids, accuracy_scores)
 
-    ## TRIAL FIVE: HRV, RHR only 
+    ## TRIAL FIVE: HRV, RHR only
     print('TRIAL FIVE: Person-specific random forest (hrv and hr only) ')
     rf2_data = whoop_data[['ScrSubjectID','Pre STAI State Anxiety', 'RHR', 'HRV']]
     persons_data = rf2_data['ScrSubjectID'].unique()
@@ -74,7 +74,7 @@ if __name__ == '__main__':
             accuracies[person] = indiv_acc
             list_of_accuracies.append(indiv_acc)
 
-    average_acc = np.mean(list_of_accuracies)   
+    average_acc = np.mean(list_of_accuracies)
     sd_acc = np.std(list_of_accuracies)
 
     print(f'Accuracy average: {average_acc}, standard dev: {sd_acc}')
@@ -93,4 +93,3 @@ if __name__ == '__main__':
     ## TRIAL SEVEN: HRV and RHR only
     xg2_data = whoop_data[['Pre STAI State Anxiety', 'HRV', 'RHR']]
     trial_7_acc = run_xgb(xg2_data)
-

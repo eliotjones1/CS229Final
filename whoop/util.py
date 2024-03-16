@@ -6,7 +6,7 @@ import xgboost as xgb
 from sklearn.model_selection import train_test_split, cross_val_score, KFold
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, roc_curve, auc, roc_auc_score
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import GridSearchCV, train_test_split
 
@@ -109,7 +109,7 @@ def create_whoop_graph_data(data):
     out = Data(x=node_features, edge_index=edge_index, y=node_labels, num_nodes=node_features.size(0))
     return out, all_indices, negative_edge_index
 
-def run_rf(data, print=False, full_metrics=False, verbose=0):
+def run_rf(data, print_metrics=False, full_metrics=False, verbose=0):
     trial_one_data = data
     if 'cluster_assign' in trial_one_data.columns:
         trial_one_data = trial_one_data.drop(columns=['ScrSubjectID', 'Post STAI State Anxiety', 'cluster_assign'])
@@ -140,6 +140,9 @@ def run_rf(data, print=False, full_metrics=False, verbose=0):
     indices = np.argsort(importances)[::-1]
 
     y_pred = rf.predict(X_test_scaled)
+    # y_score = rf.predict_proba(X_test_scaled)[:, 1]
+    # fpr, tpr, _ = roc_curve(y_test, y_score)
+    # roc_auc = auc(fpr, tpr)
     
     if full_metrics:
         precision = precision_score(y_test, y_pred, average='binary')
@@ -151,7 +154,7 @@ def run_rf(data, print=False, full_metrics=False, verbose=0):
     
 
     # Print metrics
-    if print:
+    if print_metrics:
         print("CV Scores:", cv_scores)
         print("Feature ranking:")
         for f in range(X_train.shape[1]):
@@ -160,6 +163,16 @@ def run_rf(data, print=False, full_metrics=False, verbose=0):
         print(f"Precision: {precision}")
         print(f"Recall: {recall}")
         print(f"F1 Score: {f1}")
+    # plt.figure()
+    # plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+    # plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    # plt.xlim([0.0, 1.0])
+    # plt.ylim([0.0, 1.05])
+    # plt.xlabel('False Positive Rate')
+    # plt.ylabel('True Positive Rate')
+    # plt.title('Receiver Operating Characteristic')
+    # plt.legend(loc="lower right")
+    # plt.show()
     return accuracy, precision, recall, f1
 
 def run_xgb(xg1_data):

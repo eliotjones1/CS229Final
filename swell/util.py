@@ -11,14 +11,15 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import GridSearchCV, train_test_split
 
-def create_wesad_data(path):
+def create_swell_data(path):
     data = pd.read_csv(path)
-    data = data.drop(columns=['condition', 'SSSQ class'])
+    data = data.drop(columns=['Condition Label', 'NasaTLX class', 'condition'])
     return data
 
+
 def run_rf(data, print_metrics=False, full_metrics=False, verbose=0):
-    X = data.drop(columns=['condition label', 'subject id', 'SSSQ Label'], axis=1)
-    y = data['condition label']
+    X = data.drop(columns=['NasaTLX Label', 'subject_id'], axis=1)
+    y = data['NasaTLX Label']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
     if len(X_train) < 10:
         return -1, 0, 0, 0
@@ -58,9 +59,9 @@ def run_rf(data, print_metrics=False, full_metrics=False, verbose=0):
         print(f"F1 Score: {f1}")
     return accuracy, precision, recall, f1
 
-def run_xgb(xg1_data):
-    X = xg1_data.drop(columns=['condition label', 'subject id', 'SSSQ Label'], axis=1)
-    y = xg1_data['condition label']
+def run_xgb(data):
+    X = data.drop(columns=['NasaTLX Label', 'subject_id'], axis=1)
+    y = data['NasaTLX Label']
 
     # Model #1:
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
